@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Send lead",
+      "method": "POST",
+      "path": "/",
+      "body": { "name": "Тест", "phone": "+79000000000", "message": "Проверка" },
+      "expectedStatus": 200,
+      "expectedBody": { "ok": "boolean" },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

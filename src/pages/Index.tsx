@@ -3,6 +3,9 @@ import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/hooks/use-toast';
+
+const LEAD_URL = 'https://functions.poehali.dev/82db012d-128a-4cd5-b059-928fd5115f6d';
 
 const HERO_IMG =
   'https://cdn.poehali.dev/projects/e21ce7c1-2ef2-434f-b883-c9e47a6bd6c8/files/1dea9756-6758-4e1b-a53c-8552c77823dd.jpg';
@@ -44,9 +47,41 @@ const nav = [
 
 export default function Index() {
   const [form, setForm] = useState({ name: '', phone: '', message: '' });
+  const [sending, setSending] = useState(false);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const submitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() && !form.phone.trim()) {
+      toast({ title: 'Заполните имя или телефон', variant: 'destructive' });
+      return;
+    }
+    setSending(true);
+    try {
+      const res = await fetch(LEAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        toast({ title: 'Заявка отправлена!', description: 'Мы свяжемся с вами в ближайшее время.' });
+        setForm({ name: '', phone: '', message: '' });
+      } else {
+        toast({
+          title: 'Не удалось отправить',
+          description: data.error || 'Позвоните нам по телефону.',
+          variant: 'destructive',
+        });
+      }
+    } catch {
+      toast({ title: 'Ошибка сети', description: 'Попробуйте позвонить нам.', variant: 'destructive' });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -186,7 +221,7 @@ export default function Index() {
             <SectionTitle kicker="Связаться с нами" title="Оставить заявку" />
             <form
               className="mt-12 space-y-4 p-8 rounded-2xl bg-card border border-border neon-border"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={submitLead}
             >
               <Input
                 placeholder="Ваше имя"
@@ -206,8 +241,15 @@ export default function Index() {
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="min-h-28 bg-background/60"
               />
-              <Button type="submit" size="lg" className="w-full font-semibold h-12">
-                Отправить заявку
+              <Button type="submit" size="lg" disabled={sending} className="w-full font-semibold h-12">
+                {sending ? (
+                  <>
+                    <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                    Отправляем...
+                  </>
+                ) : (
+                  'Отправить заявку'
+                )}
               </Button>
               <p className="text-center text-xs text-muted-foreground">
                 По вопросам, жалобам и предложениям пишите на{' '}
