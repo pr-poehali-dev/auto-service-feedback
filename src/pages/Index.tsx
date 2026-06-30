@@ -211,7 +211,26 @@ export default function Index() {
               </div>
             ))}
           </div>
-          <p className="text-center text-sm text-muted-foreground mt-8">
+          <div className="mt-10 max-w-3xl mx-auto rounded-2xl bg-card border border-primary/30 p-6 flex flex-col sm:flex-row gap-6 items-center">
+            <div className="flex gap-4 justify-center flex-wrap">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Icon name="Banknote" size={20} className="text-primary" />
+                Наличными
+              </div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Icon name="Smartphone" size={20} className="text-primary" />
+                Переводом
+              </div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Icon name="CalendarClock" size={20} className="text-primary" />
+                Оплата на следующий день
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground sm:border-l sm:border-border sm:pl-6 text-center sm:text-left">
+              Мы не такси — мы верный друг и помощник,<br className="hidden sm:block" /> который не подставит никогда.
+            </p>
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-5">
             Точную стоимость уточняйте по телефону — рассчитаем под вашу задачу.
           </p>
         </div>
