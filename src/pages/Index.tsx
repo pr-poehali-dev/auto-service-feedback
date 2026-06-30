@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,6 +42,7 @@ const prices = [
 const nav = [
   { id: 'services', label: 'Услуги' },
   { id: 'prices', label: 'Цены' },
+  { id: 'gallery', label: 'Фото авто', link: '/gallery' },
   { id: 'feedback', label: 'Обратная связь' },
   { id: 'contacts', label: 'Контакты' },
 ];
@@ -48,6 +50,7 @@ const nav = [
 export default function Index() {
   const [form, setForm] = useState({ name: '', phone: '', message: '' });
   const [sending, setSending] = useState(false);
+  const navigate = useNavigate();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -102,8 +105,8 @@ export default function Index() {
             {nav.map((n) => (
               <button
                 key={n.id}
-                onClick={() => scrollTo(n.id)}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => n.link ? navigate(n.link) : scrollTo(n.id)}
+                className={`text-sm hover:text-primary transition-colors ${n.link ? 'text-primary font-semibold' : 'text-muted-foreground'}`}
               >
                 {n.label}
               </button>
