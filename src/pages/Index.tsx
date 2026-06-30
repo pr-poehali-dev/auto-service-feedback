@@ -132,6 +132,9 @@ export default function Index() {
               <span className="w-2 h-2 rounded-full bg-primary animate-glow-pulse" />
               Ульяновск и область • 24/7
             </span>
+            <p className="font-display italic text-accent text-xl sm:text-2xl mb-5 leading-snug">
+              «Один звонок — и путь открыт,<br />трезвый водитель вас домчит»
+            </p>
             <h1 className="font-display font-bold uppercase leading-[0.95] tracking-tight text-5xl sm:text-6xl lg:text-7xl mb-6">
               Трезвый водитель
               <br />
