@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/hooks/use-toast';
+
+const LEAD_URL = 'https://functions.poehali.dev/82db012d-128a-4cd5-b059-928fd5115f6d';
 
 const cars = [
   {
@@ -30,8 +35,44 @@ const cars = [
 export default function Gallery() {
   const navigate = useNavigate();
   const [active, setActive] = useState<number | null>(null);
+  const [bookingCar, setBookingCar] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: '', phone: '', message: '' });
+  const [sending, setSending] = useState(false);
 
   const activeCar = cars.find((c) => c.id === active);
+
+  const openBooking = (carName: string) => {
+    setBookingCar(carName);
+    setActive(null);
+    setForm({ name: '', phone: '', message: `Хочу забронировать: ${carName}` });
+  };
+
+  const submitBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() && !form.phone.trim()) {
+      toast({ title: 'Заполните имя или телефон', variant: 'destructive' });
+      return;
+    }
+    setSending(true);
+    try {
+      const res = await fetch(LEAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        toast({ title: 'Заявка отправлена!', description: 'Мы свяжемся с вами в ближайшее время.' });
+        setBookingCar(null);
+      } else {
+        toast({ title: 'Не удалось отправить', description: 'Позвоните нам по телефону.', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Ошибка сети', description: 'Попробуйте позвонить нам.', variant: 'destructive' });
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -71,10 +112,12 @@ export default function Gallery() {
           {cars.map((car) => (
             <div
               key={car.id}
-              className="group rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:-translate-y-1 cursor-pointer"
-              onClick={() => setActive(car.id)}
+              className="group rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:-translate-y-1"
             >
-              <div className="relative overflow-hidden aspect-[4/3]">
+              <div
+                className="relative overflow-hidden aspect-[4/3] cursor-pointer"
+                onClick={() => setActive(car.id)}
+              >
                 <img
                   src={car.img}
                   alt={car.name}
@@ -90,18 +133,25 @@ export default function Gallery() {
               </div>
               <div className="p-5">
                 <h3 className="font-display font-semibold text-xl mb-2">{car.name}</h3>
-                <p className="text-sm text-muted-foreground">{car.desc}</p>
+                <p className="text-sm text-muted-foreground mb-4">{car.desc}</p>
+                <Button
+                  className="w-full font-semibold"
+                  onClick={() => openBooking(car.name)}
+                >
+                  <Icon name="CalendarCheck" size={16} className="mr-2" />
+                  Забронировать этот автомобиль
+                </Button>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-muted-foreground mb-6">Хотите арендовать одно из этих авто на праздник?</p>
+          <p className="text-muted-foreground mb-6">Хотите обсудить детали по телефону?</p>
           <a href="tel:+79192081001">
-            <Button size="lg" className="font-semibold px-8">
+            <Button size="lg" variant="outline" className="font-semibold px-8 border-primary/40 hover:bg-primary/10">
               <Icon name="Phone" size={18} className="mr-2" />
-              Позвонить: +7 919 208-10-01
+              +7 919 208-10-01
             </Button>
           </a>
         </div>
@@ -123,14 +173,77 @@ export default function Gallery() {
             className="max-w-3xl w-full rounded-2xl overflow-hidden bg-card border border-border"
             onClick={(e) => e.stopPropagation()}
           >
-            <img src={activeCar.img} alt={activeCar.name} className="w-full object-cover max-h-[60vh]" />
+            <img src={activeCar.img} alt={activeCar.name} className="w-full object-cover max-h-[55vh]" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="font-display font-bold text-2xl">{activeCar.name}</h2>
                 <span className="text-xs text-muted-foreground uppercase tracking-widest">{activeCar.year}</span>
               </div>
-              <p className="text-muted-foreground">{activeCar.desc}</p>
+              <p className="text-muted-foreground mb-5">{activeCar.desc}</p>
+              <Button
+                className="w-full font-semibold h-12"
+                onClick={() => openBooking(activeCar.name)}
+              >
+                <Icon name="CalendarCheck" size={18} className="mr-2" />
+                Забронировать этот автомобиль
+              </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Booking Modal */}
+      {bookingCar && (
+        <div
+          className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex items-center justify-center p-4"
+          onClick={() => setBookingCar(null)}
+        >
+          <div
+            className="max-w-lg w-full rounded-2xl bg-card border border-primary/30 neon-border p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Бронирование</p>
+                <h2 className="font-display font-bold text-2xl">{bookingCar}</h2>
+              </div>
+              <button
+                className="grid place-items-center w-9 h-9 rounded-full bg-muted hover:bg-muted/70 transition-colors"
+                onClick={() => setBookingCar(null)}
+              >
+                <Icon name="X" size={18} />
+              </button>
+            </div>
+            <form onSubmit={submitBooking} className="space-y-4">
+              <Input
+                placeholder="Ваше имя"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="h-12 bg-background/60"
+              />
+              <Input
+                placeholder="Телефон"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="h-12 bg-background/60"
+              />
+              <Textarea
+                placeholder="Дата, мероприятие, пожелания..."
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                className="min-h-24 bg-background/60"
+              />
+              <Button type="submit" size="lg" disabled={sending} className="w-full font-semibold h-12">
+                {sending ? (
+                  <>
+                    <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                    Отправляем...
+                  </>
+                ) : (
+                  'Отправить заявку'
+                )}
+              </Button>
+            </form>
           </div>
         </div>
       )}
