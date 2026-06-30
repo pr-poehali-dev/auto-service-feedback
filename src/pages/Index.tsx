@@ -312,7 +312,7 @@ export default function Index() {
 
 function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
   return (
-    <div className="text-center">
+    <div className="text-center mx-[38px] my-0 rounded-3xl">
       <span className="text-primary text-sm font-semibold uppercase tracking-[0.2em]">{kicker}</span>
       <h2 className="font-display font-bold uppercase text-4xl sm:text-5xl mt-3 tracking-tight">
         {title}
