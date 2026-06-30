@@ -137,10 +137,7 @@ export default function Gallery() {
                 <Button
                   className="w-full font-semibold"
                   onClick={() => openBooking(car.name)}
-                >
-                  <Icon name="CalendarCheck" size={16} className="mr-2" />
-                  Забронировать этот автомобиль
-                </Button>
+                >Забронировать</Button>
               </div>
             </div>
           ))}
