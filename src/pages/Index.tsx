@@ -11,8 +11,8 @@ const LEAD_URL = 'https://functions.poehali.dev/82db012d-128a-4cd5-b059-928fd511
 const HERO_IMG =
   'https://cdn.poehali.dev/projects/e21ce7c1-2ef2-434f-b883-c9e47a6bd6c8/files/1dea9756-6758-4e1b-a53c-8552c77823dd.jpg';
 
-const PHONE = '+7 919 208-10-01';
-const PHONE_HREF = 'tel:+79192081001';
+const PHONE = '8 (800) 301-36-34';
+const PHONE_HREF = 'tel:+78003013634';
 const TG = '@AutoVodAuto';
 const TG_HREF = 'https://t.me/AutoVodAuto';
 const MAIL = 'vodautovod@mail.ru';

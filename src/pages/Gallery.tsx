@@ -145,10 +145,10 @@ export default function Gallery() {
 
         <div className="mt-12 text-center">
           <p className="text-muted-foreground mb-6">Хотите обсудить детали по телефону?</p>
-          <a href="tel:+79192081001">
+          <a href="tel:+78003013634">
             <Button size="lg" variant="outline" className="font-semibold px-8 border-primary/40 hover:bg-primary/10">
               <Icon name="Phone" size={18} className="mr-2" />
-              +7 919 208-10-01
+              8 (800) 301-36-34
             </Button>
           </a>
         </div>
